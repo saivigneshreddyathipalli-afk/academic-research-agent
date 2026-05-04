@@ -1,9 +1,9 @@
 # main.py
 # ──────────────────────────────────────────────────────────────────────────────
-# Entry point for the Multi-Agent Research System.
+# Entry point for the Multi-Agent Research System — Uno Version.
 #
 # Flow:
-#   1. Load .env (ensures GROQ_API_KEY is available).
+#   1. Load .env (ensures GROQ_API_KEY and ANTHROPIC_API_KEY are available).
 #   2. Prompt the user for a research topic.
 #   3. Hand the topic to crew.run_crew().
 #   4. Write the resulting markdown to final_report.md.
@@ -14,16 +14,13 @@ from dotenv import load_dotenv
 
 from crew import run_crew
 
-# ── Load API key from .env ───────────────────────────────────────────────────
-# The .env file must exist in the project root with a valid GROQ_API_KEY.
-# ─────────────────────────────────────────────────────────────────────────────
 load_dotenv()
 
 
 def main():
     print("=" * 60)
-    print("  Multi-Agent Research System")
-    print("  Powered by CrewAI + LangChain + Groq")
+    print("  Multi-Agent Research System — Uno Version")
+    print("  Dual-Engine: Groq Llama-3.3 + Claude Sonnet 4")
     print("=" * 60)
     print()
 
@@ -35,11 +32,13 @@ def main():
 
     print(f"\nResearching: {topic}\n")
     print("-" * 40)
+    print("Phase 1/3: Lead Researcher (Groq) — Tavily + ArXiv + RAG")
+    print("Phase 2/3: Data Analyst (Groq) — Compression to 1,000-word brief")
+    print("Phase 3/3: Senior Writer (Claude) — Zero-shot academic paper")
+    print("-" * 40)
 
-    # Execute the crew — runs Researcher first, then Writer sequentially.
     result = run_crew(topic)
 
-    # ── Write final report to disk ───────────────────────────────────────────
     output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "final_report.md")
 
     with open(output_path, "w", encoding="utf-8") as f:
