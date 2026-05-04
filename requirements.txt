@@ -12,4 +12,3 @@ arxiv>=2.1.0
 chromadb>=0.5.0
 fastembed>=0.5.0
 pypdf>=4.0.0
-langchain-anthropic>=0.3.0

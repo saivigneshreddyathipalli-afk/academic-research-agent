@@ -1,6 +1,6 @@
 from crewai import Agent
 
-from config import llm_groq, llm_claude
+from config import llm_groq, llm_kimi
 from tools import tavily_search, arxiv_fetch, rag_query
 
 
@@ -79,7 +79,7 @@ senior_writer = Agent(
         "produce the final report immediately. Your first draft is your "
         "only draft."
     ),
-    llm=llm_claude,
+    llm=llm_kimi,
     tools=[],
     verbose=True,
     allow_delegation=False,

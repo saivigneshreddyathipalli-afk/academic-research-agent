@@ -47,7 +47,7 @@ st.markdown(
 st.markdown(
     '<div class="sub-header">'
     "Dual-engine pipeline: Groq Llama-3.3 (Research + Analysis) → "
-    "Claude Sonnet 4 (Academic Writing). Cost-optimized asymmetric architecture."
+    "Kimi Moonshot (Academic Writing). Cost-optimized asymmetric architecture."
     "</div>",
     unsafe_allow_html=True,
 )
@@ -59,8 +59,8 @@ with cost_estimate:
         "|-------|-------|----------|\n"
         "| 1. Lead Researcher (Groq) | Llama-3.3-70B | ~$0.09 |\n"
         "| 2. Data Analyst (Groq) | Llama-3.3-70B | ~$0.03 |\n"
-        "| 3. Senior Writer (Claude) | Sonnet 4 | ~$0.16 |\n"
-        "| **Total** | | **~$0.28** |"
+        "| 3. Senior Writer (Kimi) | Moonshot-v1-32K | ~$0.05 |\n"
+        "| **Total** | | **~$0.17** |"
     )
 
 col_input, col_pdf = st.columns([3, 1])
@@ -103,8 +103,8 @@ if st.button("🚀  Research Now", type="primary", use_container_width=True):
 
         except Exception as e:
             error_msg = str(e)
-            if "GROQ_API_KEY" in error_msg or "api_key" in error_msg.lower():
-                st.error("API Key Error: Add your GROQ_API_KEY and ANTHROPIC_API_KEY to the `.env` file.")
+            if "GROQ_API_KEY" in error_msg or "MOONSHOT_API_KEY" in error_msg or "api_key" in error_msg.lower():
+                st.error("API Key Error: Add your GROQ_API_KEY, MOONSHOT_API_KEY, and TAVILY_API_KEY to the `.env` file.")
             elif "decommissioned" in error_msg:
                 st.error(
                     "Model Error: This Groq model has been decommissioned. "
@@ -112,7 +112,7 @@ if st.button("🚀  Research Now", type="primary", use_container_width=True):
                 )
             elif "rate limit" in error_msg.lower() or "429" in error_msg:
                 st.error(
-                    "Rate Limit: Groq or Anthropic is throttling requests. "
+                    "Rate Limit: Groq or Moonshot is throttling requests. "
                     "Wait 30 seconds and try again."
                 )
             elif "connection" in error_msg.lower() or "timeout" in error_msg.lower():
@@ -157,12 +157,12 @@ if "report" in st.session_state:
         st.caption(
             "Dual-engine pipeline:\n"
             "🔵 Groq Llama-3.3 (Researcher → Analyst)\n"
-            "🟣 Claude Sonnet 4 (Writer)\n"
-            "Est. cost: ~$0.28 per report"
+            "🟣 Kimi Moonshot-v1-32K (Writer)\n"
+            "Est. cost: ~$0.17 per report"
         )
 
 st.divider()
 st.caption(
     "Uno Version  |  Dual-Engine Architecture  |  "
-    "Groq + Anthropic  |  Tavily + ArXiv + Local RAG"
+    "Groq + Kimi Moonshot  |  Tavily + ArXiv + Local RAG"
 )
