@@ -1,30 +1,17 @@
-# web_app.py
-# ──────────────────────────────────────────────────────────────────────────────
-# Streamlit web interface for the Academic Multi-Agent Research System.
-#
-# Flow:
-#   1. User enters a research topic
-#   2. Streamlit calls crew.run_crew(topic) — Researcher → Analyst → Writer
-#   3. The markdown report is displayed via st.markdown()
-#   4. The PDF is generated via pdf_builder and offered for download
-# ──────────────────────────────────────────────────────────────────────────────
-
 from dotenv import load_dotenv
 import streamlit as st
 
 from crew import run_crew
 from pdf_builder import generate_pdf
 
-# ── Configuration ────────────────────────────────────────────────────────────
 load_dotenv()
 
 st.set_page_config(
-    page_title="Academic Research Agent",
+    page_title="Academic Research Agent — Uno",
     page_icon="🧠",
     layout="wide",
 )
 
-# ── Custom CSS ───────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
     .main-header {
@@ -42,74 +29,100 @@ st.markdown("""
     .stButton > button {
         width: 100%;
     }
+    .phase-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-right: 6px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-
-# ── Header ───────────────────────────────────────────────────────────────────
 st.markdown(
-    '<div class="main-header">🧠 Academic Research Agent</div>',
+    '<div class="main-header">🧠 Academic Research Agent — Uno</div>',
     unsafe_allow_html=True,
 )
 st.markdown(
     '<div class="sub-header">'
-    "Three-agent AI system that investigates any topic and produces a "
-    "hybrid IMRaD academic report with inline citations, literature review, "
-    "and formal references. Researcher → Analyst → Writer."
+    "Dual-engine pipeline: Groq Llama-3.3 (Research + Analysis) → "
+    "Kimi Moonshot (Academic Writing). Cost-optimized asymmetric architecture."
     "</div>",
     unsafe_allow_html=True,
 )
 
-# ── Input Section ────────────────────────────────────────────────────────────
-col1, col2, col3 = st.columns([1, 2, 1])
+cost_estimate = st.expander("Cost Estimate per Run")
+with cost_estimate:
+    st.markdown(
+        "| Phase | Model | Est. Cost |\n"
+        "|-------|-------|----------|\n"
+        "| 1. Lead Researcher (Groq) | Llama-3.3-70B | ~$0.09 |\n"
+        "| 2. Data Analyst (Groq) | Llama-3.3-70B | ~$0.03 |\n"
+        "| 3. Senior Writer (Kimi) | Moonshot-v1-32K | ~$0.05 |\n"
+        "| **Total** | | **~$0.17** |"
+    )
 
-with col2:
+col_input, col_pdf = st.columns([3, 1])
+
+with col_input:
     topic = st.text_input(
         label="Enter your research topic",
         placeholder="e.g., organic farming trends in India, EV market in Europe, solid-state batteries...",
         label_visibility="collapsed",
     )
 
-    # ── Trigger Research ────────────────────────────────────────────────
-    if st.button("🚀  Research Now", type="primary", use_container_width=True):
-        if not topic.strip():
-            st.warning("Please enter a research topic.")
-        else:
-            try:
-                with st.spinner(
-                    f"Researching: **{topic}**\n\n"
-                    f"This involves 3 agents (Researcher → Analyst → Writer) "
-                    f"and takes 3-6 minutes..."
-                ):
-                    result = run_crew(topic)
+with col_pdf:
+    uploaded_pdf = st.file_uploader(
+        "Reference PDF (optional)",
+        type=["pdf"],
+    )
 
-                # Store in session state so it persists across re-runs
-                st.session_state["report"] = result
-                st.session_state["topic"] = topic
+if st.button("🚀  Research Now", type="primary", use_container_width=True):
+    if not topic.strip():
+        st.warning("Please enter a research topic.")
+    else:
+        try:
+            with st.spinner(
+                f"Phase 1/3: Lead Researcher (Groq) — Searching Tavily, ArXiv, and RAG...\n\n"
+                f"This involves 3 agents (Researcher → Analyst → Writer) "
+                f"and takes 3-8 minutes..."
+            ):
+                if uploaded_pdf is not None:
+                    from rag_pipeline import ResearchRAG
+                    rag = ResearchRAG()
+                    rag.clear()
+                    pdf_bytes = uploaded_pdf.read()
+                    chunk_count = rag.ingest_pdf_bytes(pdf_bytes)
+                    st.info(f"RAG: Ingested {chunk_count} chunks from '{uploaded_pdf.name}'")
 
-            except Exception as e:
-                error_msg = str(e)
-                if "GROQ_API_KEY" in error_msg or "api_key" in error_msg.lower():
-                    st.error("API Key Error: Add your GROQ_API_KEY to the `.env` file.")
-                elif "decommissioned" in error_msg:
-                    st.error(
-                        "Model Error: This Groq model has been decommissioned. "
-                        "Update the model in config.py."
-                    )
-                elif "rate limit" in error_msg.lower() or "429" in error_msg:
-                    st.error(
-                        "Rate Limit: Groq is throttling requests. "
-                        "Wait 30 seconds and try again."
-                    )
-                elif "connection" in error_msg.lower() or "timeout" in error_msg.lower():
-                    st.error(
-                        "Connection Error: Unable to reach Groq API. "
-                        "Check your internet connection and try again."
-                    )
-                else:
-                    st.error(f"Research failed:\n\n{error_msg}")
+                result = run_crew(topic)
 
-# ── Results Section ──────────────────────────────────────────────────────────
+            st.session_state["report"] = result
+            st.session_state["topic"] = topic
+
+        except Exception as e:
+            error_msg = str(e)
+            if "GROQ_API_KEY" in error_msg or "MOONSHOT_API_KEY" in error_msg or "api_key" in error_msg.lower():
+                st.error("API Key Error: Add your GROQ_API_KEY, MOONSHOT_API_KEY, and TAVILY_API_KEY to the `.env` file.")
+            elif "decommissioned" in error_msg:
+                st.error(
+                    "Model Error: This Groq model has been decommissioned. "
+                    "Update the model in config.py."
+                )
+            elif "rate limit" in error_msg.lower() or "429" in error_msg:
+                st.error(
+                    "Rate Limit: Groq or Moonshot is throttling requests. "
+                    "Wait 30 seconds and try again."
+                )
+            elif "connection" in error_msg.lower() or "timeout" in error_msg.lower():
+                st.error(
+                    "Connection Error: Unable to reach API. "
+                    "Check your internet connection and try again."
+                )
+            else:
+                st.error(f"Research failed:\n\n{error_msg}")
+
 if "report" in st.session_state:
     st.divider()
 
@@ -122,7 +135,6 @@ if "report" in st.session_state:
     with col_right:
         st.subheader("Export")
 
-        # Generate PDF
         pdf_bytes = generate_pdf(st.session_state["report"], st.session_state["topic"])
 
         st.download_button(
@@ -133,7 +145,6 @@ if "report" in st.session_state:
             use_container_width=True,
         )
 
-        # Download raw markdown too
         st.download_button(
             label="Download Markdown",
             data=st.session_state["report"],
@@ -144,14 +155,14 @@ if "report" in st.session_state:
 
         st.divider()
         st.caption(
-            "3-agent pipeline:\n"
-            "Researcher (search) → Analyst (evaluate) → Writer (IMRaD report)"
+            "Dual-engine pipeline:\n"
+            "🔵 Groq Llama-3.3 (Researcher → Analyst)\n"
+            "🟣 Kimi Moonshot-v1-32K (Writer)\n"
+            "Est. cost: ~$0.17 per report"
         )
 
-# ── Footer ───────────────────────────────────────────────────────────────────
 st.divider()
 st.caption(
-    "Powered by CrewAI + Groq Llama 3.3  |  "
-    "DuckDuckGo Web Search  |  "
-    "Hybrid IMRaD Academic Format"
+    "Uno Version  |  Dual-Engine Architecture  |  "
+    "Groq + Kimi Moonshot  |  Tavily + ArXiv + Local RAG"
 )
