@@ -30,7 +30,7 @@ lead_researcher = Agent(
     tools=[tavily_search, arxiv_fetch, rag_query],
     verbose=True,
     allow_delegation=False,
-    max_iter=15,
+    max_iter=5,
 )
 
 data_analyst = Agent(

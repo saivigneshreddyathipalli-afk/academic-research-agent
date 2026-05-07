@@ -10,6 +10,7 @@ os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY", "")
 llm_groq = LLM(
     model="groq/llama-3.3-70b-versatile",
     temperature=0.3,
+    max_tokens=4096,
 )
 
 llm_gemini = LLM(
