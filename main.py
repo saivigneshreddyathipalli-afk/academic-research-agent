@@ -20,7 +20,7 @@ load_dotenv()
 def main():
     print("=" * 60)
     print("  Multi-Agent Research System — Uno Version")
-    print("  Zero-Cost Dual-Engine: Groq Llama-3.3 + Gemini 1.5 Flash")
+    print("  Zero-Cost Dual-Engine: Groq Llama-3.3 + Gemini 2.0 Flash")
     print("=" * 60)
     print()
 
@@ -34,7 +34,7 @@ def main():
     print("-" * 40)
     print("Phase 1/3: Lead Researcher (Groq) — Tavily + ArXiv + RAG")
     print("Phase 2/3: Data Analyst (Groq) — Compression to 1,000-word brief")
-    print("Phase 3/3: Senior Writer (Gemini 1.5 Flash) — Zero-shot academic paper")
+    print("Phase 3/3: Senior Writer (Gemini 2.0 Flash) — Zero-shot academic paper")
     print("-" * 40)
 
     result = run_crew(topic)

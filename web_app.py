@@ -47,7 +47,7 @@ st.markdown(
 st.markdown(
     '<div class="sub-header">'
     "Zero-cost dual-engine pipeline: Groq Llama-3.3 (Research + Analysis) → "
-    "Gemini 1.5 Flash (Academic Writing). Free-tier asymmetric architecture."
+    "Gemini 2.0 Flash (Academic Writing). Free-tier asymmetric architecture."
     "</div>",
     unsafe_allow_html=True,
 )
@@ -59,7 +59,7 @@ with cost_estimate:
         "|-------|-------|----------|\n"
         "| 1. Lead Researcher (Groq) | Llama-3.3-70B | ~$0.03 |\n"
         "| 2. Data Analyst (Groq) | Llama-3.3-70B | ~$0.01 |\n"
-        "| 3. Senior Writer (Gemini) | Gemini 1.5 Flash | **FREE** |\n"
+        "| 3. Senior Writer (Gemini) | Gemini 2.0 Flash | **FREE** |\n"
         "| **Total** | | **~$0.04** |"
     )
 
@@ -157,7 +157,7 @@ if "report" in st.session_state:
         st.caption(
             "Zero-cost dual-engine pipeline:\n"
             "🔵 Groq Llama-3.3 (Researcher → Analyst)\n"
-            "🟢 Gemini 1.5 Flash (Writer — Free tier)\n"
+            "🟢 Gemini 2.0 Flash (Writer — Free tier)\n"
             "Est. cost: ~$0.04 per report"
         )
 

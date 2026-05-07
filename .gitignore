@@ -37,3 +37,6 @@ Thumbs.db
 
 # Streamlit
 .streamlit/
+
+# Chroma vector store (auto-generated)
+chroma_db/
