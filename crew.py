@@ -8,7 +8,7 @@ def run_crew(topic: str):
     """
     Build and execute the 3-agent dual-engine research crew for the given topic.
 
-    Phase 1 (Lead Researcher, Groq) → Phase 2 (Data Analyst, Groq) → Phase 3 (Senior Writer, Claude)
+    Phase 1 (Lead Researcher, Groq) → Phase 2 (Data Analyst, Groq) → Phase 3 (Senior Writer, Gemini 1.5 Flash)
 
     Args:
         topic: The research subject supplied by the user.
@@ -21,7 +21,7 @@ def run_crew(topic: str):
         tasks=[research_task, analysis_task, writing_task],
         process=Process.sequential,
         verbose=True,
-        memory=False,
+        memory=True,
     )
 
     result = research_crew.kickoff(inputs={"topic": topic})

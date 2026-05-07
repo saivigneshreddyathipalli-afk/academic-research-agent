@@ -1,6 +1,6 @@
 from crewai import Agent
 
-from config import llm_groq, llm_kimi
+from config import llm_groq, llm_gemini
 from tools import tavily_search, arxiv_fetch, rag_query
 
 
@@ -30,7 +30,7 @@ lead_researcher = Agent(
     tools=[tavily_search, arxiv_fetch, rag_query],
     verbose=True,
     allow_delegation=False,
-    max_iter=50,
+    max_iter=15,
 )
 
 data_analyst = Agent(
@@ -79,7 +79,7 @@ senior_writer = Agent(
         "produce the final report immediately. Your first draft is your "
         "only draft."
     ),
-    llm=llm_kimi,
+    llm=llm_gemini,
     tools=[],
     verbose=True,
     allow_delegation=False,
