@@ -21,7 +21,7 @@ def run_crew(topic: str):
         tasks=[research_task, analysis_task, writing_task],
         process=Process.sequential,
         verbose=True,
-        memory=True,
+        memory=False,
     )
 
     result = research_crew.kickoff(inputs={"topic": topic})
