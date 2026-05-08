@@ -46,8 +46,8 @@ st.markdown(
 )
 st.markdown(
     '<div class="sub-header">'
-    "Zero-cost dual-engine pipeline: Groq Llama-3.3 (Research + Analysis) → "
-    "Gemini 2.0 Flash (Academic Writing). Free-tier asymmetric architecture."
+    "Asymmetric 3-phase pipeline: Groq Llama-3.3-70B for Research, Analysis, and Writing. "
+    "Tavily for search, ArXiv for papers, Chroma RAG for PDFs."
     "</div>",
     unsafe_allow_html=True,
 )
@@ -59,8 +59,8 @@ with cost_estimate:
         "|-------|-------|----------|\n"
         "| 1. Lead Researcher (Groq) | Llama-3.3-70B | ~$0.03 |\n"
         "| 2. Data Analyst (Groq) | Llama-3.3-70B | ~$0.01 |\n"
-        "| 3. Senior Writer (Gemini) | Gemini 2.0 Flash | **FREE** |\n"
-        "| **Total** | | **~$0.04** |"
+        "| 3. Senior Writer (Groq) | Llama-3.3-70B | ~$0.03 |\n"
+        "| **Total** | | **~$0.07** |"
     )
 
 col_input, col_pdf = st.columns([3, 1])
@@ -86,7 +86,7 @@ if st.button("🚀  Research Now", type="primary", use_container_width=True):
             with st.spinner(
                 f"Phase 1/3: Lead Researcher (Groq) — Searching Tavily, ArXiv, and RAG...\n\n"
                 f"This involves 3 agents (Researcher → Analyst → Writer) "
-                f"and takes 3-8 minutes..."
+                f"and takes 3-6 minutes..."
             ):
                 if uploaded_pdf is not None:
                     from rag_pipeline import ResearchRAG
@@ -103,16 +103,16 @@ if st.button("🚀  Research Now", type="primary", use_container_width=True):
 
         except Exception as e:
             error_msg = str(e)
-            if "GROQ_API_KEY" in error_msg or "GOOGLE_API_KEY" in error_msg or "api_key" in error_msg.lower():
-                st.error("API Key Error: Add your GROQ_API_KEY, GOOGLE_API_KEY, and TAVILY_API_KEY to the `.env` file.")
+            if "GROQ_API_KEY" in error_msg or "api_key" in error_msg.lower():
+                st.error("API Key Error: Add your GROQ_API_KEY to the `.env` file.")
             elif "decommissioned" in error_msg:
                 st.error(
                     "Model Error: This Groq model has been decommissioned. "
                     "Update the model in config.py."
                 )
-            elif "rate limit" in error_msg.lower() or "429" in error_msg:
+            elif "rate limit" in error_msg.lower() or "429" in error_msg or "TPM" in error_msg:
                 st.error(
-                    "Rate Limit: Groq or Google is throttling requests. "
+                    "Rate Limit: Groq is throttling requests. "
                     "Wait 30 seconds and try again."
                 )
             elif "connection" in error_msg.lower() or "timeout" in error_msg.lower():
@@ -155,14 +155,13 @@ if "report" in st.session_state:
 
         st.divider()
         st.caption(
-            "Zero-cost dual-engine pipeline:\n"
-            "🔵 Groq Llama-3.3 (Researcher → Analyst)\n"
-            "🟢 Gemini 2.0 Flash (Writer — Free tier)\n"
-            "Est. cost: ~$0.04 per report"
+            "3-phase pipeline (all Groq):\n"
+            "🔵 Researcher → Analyst → Writer\n"
+            "Est. cost: ~$0.07 per report"
         )
 
 st.divider()
 st.caption(
-    "Uno Version  |  Zero-Cost Dual-Engine  |  "
-    "Groq + Gemini  |  Tavily + ArXiv + Local RAG"
+    "Uno Version  |  Groq Llama-3.3-70B  |  "
+    "Tavily + ArXiv + Local RAG"
 )

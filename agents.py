@@ -1,6 +1,6 @@
 from crewai import Agent
 
-from config import llm_groq, get_writer_llm
+from config import llm_groq, llm_writer
 from tools import tavily_search, arxiv_fetch, rag_query
 
 
@@ -44,7 +44,7 @@ senior_writer = Agent(
         "Never fabricate data. Qualify uncertain findings.\n"
         "CRITICAL: Write the entire paper in ONE PASS. No planning, no self-correction."
     ),
-    llm=get_writer_llm(),
+    llm=llm_writer,
     tools=[],
     verbose=True,
     allow_delegation=False,

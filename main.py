@@ -3,7 +3,7 @@
 # Entry point for the Multi-Agent Research System — Uno Version.
 #
 # Flow:
-#   1. Load .env (ensures GROQ_API_KEY and GOOGLE_API_KEY are available).
+#   1. Load .env (ensures GROQ_API_KEY is available).
 #   2. Prompt the user for a research topic.
 #   3. Hand the topic to crew.run_crew().
 #   4. Write the resulting markdown to final_report.md.
@@ -20,7 +20,7 @@ load_dotenv()
 def main():
     print("=" * 60)
     print("  Multi-Agent Research System — Uno Version")
-    print("  Zero-Cost Dual-Engine: Groq Llama-3.3 + Gemini 2.0 Flash")
+    print("  3-Phase Pipeline: Groq Llama-3.3-70B (All Phases)")
     print("=" * 60)
     print()
 
@@ -33,8 +33,8 @@ def main():
     print(f"\nResearching: {topic}\n")
     print("-" * 40)
     print("Phase 1/3: Lead Researcher (Groq) — Tavily + ArXiv + RAG")
-    print("Phase 2/3: Data Analyst (Groq) — Compression to 1,000-word brief")
-    print("Phase 3/3: Senior Writer (Gemini 2.0 Flash) — Zero-shot academic paper")
+    print("Phase 2/3: Data Analyst (Groq) — Compression to brief")
+    print("Phase 3/3: Senior Writer (Groq) — Zero-shot academic paper")
     print("-" * 40)
 
     result = run_crew(topic)

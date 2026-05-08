@@ -13,25 +13,13 @@ llm_groq = LLM(
     max_tokens=4096,
 )
 
+# Phase 3 writer: Groq by default (free, no quota issues).
+# To switch to Gemini 2.0 Flash, change `llm_writer = llm_groq` below to
+# `llm_writer = LLM(model="google/gemini-2.0-flash", temperature=0.2)`.
+llm_writer = llm_groq
+
+# Keep Gemini instance available for easy swap
 llm_gemini = LLM(
     model="google/gemini-2.0-flash",
     temperature=0.2,
 )
-
-# Auto-detect if Gemini has quota; fall back to Groq if not
-_gemini_available = None
-
-def get_writer_llm():
-    """Return Gemini if available, otherwise Groq fallback."""
-    global _gemini_available
-    if _gemini_available is not None:
-        return llm_gemini if _gemini_available else llm_groq
-
-    try:
-        llm_gemini.call("Test.")
-        _gemini_available = True
-        return llm_gemini
-    except Exception:
-        _gemini_available = False
-        print("[WARN] Gemini quota exhausted. Falling back to Groq Llama-3.3-70B for Phase 3.")
-        return llm_groq
